@@ -211,7 +211,7 @@ func (w *writer) renderMessage(m *descriptor.DescriptorProto) {
 			if r.Start != nil && r.End != nil {
 				s, e := *r.Start, *r.End
 				w.writeUint(uint64(*r.Start))
-				if s != e {
+				if s != e-1 {
 					w.writeString(" to ")
 					w.writeUint(uint64(*r.End))
 				}
