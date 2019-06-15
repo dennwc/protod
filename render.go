@@ -98,6 +98,7 @@ func (w *writer) renderHeader(fd *FileDescriptorProto) {
 
 func (w *writer) renderDescriptor(fd *FileDescriptorProto) {
 	w.pkg = fd.GetPackage()
+	w.path = strings.Split(w.pkg, ".")
 	w.proto3 = fd.GetSyntax() == "proto3"
 	w.renderHeader(fd)
 
@@ -244,11 +245,6 @@ var typeToStr = map[descriptor.FieldDescriptorProto_Type]string{
 
 func (w *writer) getType(name string) string {
 	name = strings.TrimPrefix(name, ".")
-	if !strings.HasPrefix(name, w.pkg+".") {
-		return name
-	}
-	name = name[len(w.pkg)+1:]
-
 	sub := strings.Split(name, ".")
 	if len(sub) == 1 {
 		return name
@@ -257,13 +253,13 @@ func (w *writer) getType(name string) string {
 
 	for i := 0; i < len(sub) && i < len(pkg); i++ {
 		if sub[i] != pkg[i] {
-			return name
+			return strings.Join(sub[i:], ".")
 		}
 	}
 	if len(pkg) < len(sub) {
 		return strings.Join(sub[len(pkg):], ".")
 	}
-	return name
+	return sub[len(sub)-1]
 }
 
 func (w *writer) renderField(f *descriptor.FieldDescriptorProto) {
