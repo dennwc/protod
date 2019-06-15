@@ -43,6 +43,12 @@ func (w *writer) writeUint(v uint64) {
 	}
 }
 
+func (w *writer) writeInt(v int64) {
+	if w.err == nil {
+		_, w.err = w.bw.WriteString(strconv.FormatInt(v, 10))
+	}
+}
+
 func (w *writer) push(name string) {
 	w.tabs = append(w.tabs, '\t')
 	w.path = append(w.path, name)
@@ -144,7 +150,7 @@ func (w *writer) renderEnum(e *descriptor.EnumDescriptorProto) {
 		w.tab()
 		w.writeString(v.GetName())
 		w.writeString("\t= ")
-		w.writeUint(uint64(v.GetNumber()))
+		w.writeInt(int64(v.GetNumber()))
 		if v.Options != nil {
 			// TODO(dennwc): enum value options
 			log.Printf("TODO: %s: enum value options %q", w.pkg, v.GetName())
