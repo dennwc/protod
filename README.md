@@ -13,13 +13,14 @@ Sometimes it is necessary to recover `.proto` files from binaries or memory dump
 
 **Not supported yet:**
 - Field or file options
+- Oneof fields
 - Extensions
 - Compressed file descriptors (used in Go)
 - Recovery without file descriptors
 
 ## Installation
 
-Go 1.12+ is required.
+Go **1.12+** is required.
 
 ```
 go get -u github.com/dennwc/protod
