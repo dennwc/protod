@@ -17,21 +17,32 @@ var (
 	fRaw = flag.Bool("raw", false, "dump raw proto file descriptors as well")
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
+	app := filepath.Base(os.Args[0])
+	if len(commit) > 8 {
+		commit = commit[:8]
+	}
+	fmt.Printf("%s %v, commit %v, built at %v\n", app, version, commit, date)
 	flag.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %s [--out dir] <files...>\n", app)
 		flag.PrintDefaults()
 	}
 	flag.Parse()
 	args := flag.Args()
 	if len(args) == 0 {
-		fmt.Fprintf(flag.CommandLine.Output(), "expected at least one argument")
+		fmt.Fprintf(os.Stderr, "expected at least one argument\n")
 		flag.Usage()
 		os.Exit(2)
 	}
 	for _, fname := range args {
 		if err := run(*fOut, fname, *fRaw); err != nil {
-			fmt.Fprintf(flag.CommandLine.Output(), "error: %s: %v", fname, err)
+			fmt.Fprintf(os.Stderr, "error: %s: %v\n", fname, err)
 			os.Exit(1)
 		}
 	}
