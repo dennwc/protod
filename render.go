@@ -305,6 +305,9 @@ func (w *writer) renderField(f *descriptor.FieldDescriptorProto) {
 
 	if def := f.GetDefaultValue(); def != "" {
 		w.writeString(" [default = ")
+		if f.GetType() == descriptor.FieldDescriptorProto_TYPE_STRING {
+			def = strconv.Quote(def)
+		}
 		w.writeString(def)
 		w.writeString("]")
 	}
